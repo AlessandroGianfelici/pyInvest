@@ -39,7 +39,8 @@ def fundamental_indicator(stock):
     score["code"] = [stock.code]
     score["Date"] = [stock.quot_date]
     
-    score["ReferencePrice"] = [stock.reference_price]
+    score["Reference Price"] = [stock.reference_price]
+    score["Graham Price"] = [stock.graham_price]
 
     score["Last Closing Price"] = [stock.hist['Close'].values[-1]]
     score["price_over_graham_number"] = [stock.reference_price/stock.graham_price]
