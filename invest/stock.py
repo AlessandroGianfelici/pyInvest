@@ -73,12 +73,12 @@ class Stock:
                 try:
                     self._n_shares = float(self.get_info("sharesOutstanding"))
                 except:
-                    shares = self.ticker.shares.reset_index()
-                    self._n_shares = shares.loc[shares['Year'] == self.quot_date.year - 1]['BasicShares'].item()
+                    shares = self.ticker.shares
+                    self._n_shares = shares.loc[shares.index == (self.quot_date.year - 1)]['BasicShares'].item()
             else:
                 try:
-                    shares = self.ticker.shares.reset_index()
-                    self._n_shares = shares.loc[shares['Year'] == self.quot_date.year - 1]['BasicShares'].item()
+                    shares = self.ticker.shares
+                    self._n_shares = shares.loc[shares.index == (self.quot_date.year - 1)]['BasicShares'].item()
                 except:
                     self._n_shares = self.ticker.info['sharesOutstanding']
 
