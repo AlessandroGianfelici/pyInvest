@@ -37,12 +37,12 @@ def merge_dataframe(data_frames):
 def fundamental_indicator(stock):
     score = pd.DataFrame()
     score["code"] = [stock.code]
+    score["name"] = [stock.get_info('shortName')]
     score["Date"] = [stock.quot_date]
     
     score["Reference Price"] = [stock.reference_price]
     score["Graham Price"] = [stock.graham_price]
 
-    score["Last Closing Price"] = [stock.hist['Close'].values[-1]]
     score["price_over_graham_number"] = [stock.reference_price/stock.graham_price]
     score["Net current asset per share over price"] = [stock.net_current_assets_per_share/stock.reference_price]
 
