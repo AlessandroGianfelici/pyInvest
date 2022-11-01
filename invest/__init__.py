@@ -1,4 +1,4 @@
 from invest.stock import Stock
-import utils
+from invest import utils
 
 __all__ = ['Stock', 'utils']
