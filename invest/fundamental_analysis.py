@@ -35,4 +35,5 @@ def main_fundamental_indicators(stock):
     score['ROCE'] = [stock.ROCE]
     score['Net income per employee'] = [stock.net_income_per_employee]
     score['Revenue per employee'] = [stock.revenue_per_employee]
+    score['full_object'] = [stock]
     return score
