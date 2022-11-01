@@ -2,7 +2,9 @@ import numpy as np
 import pandas as pd
 import yfinance as yf
 from datetime import datetime
+import logging
 
+logger = logging.getLogger()
 
 class Stock:
     def __init__(self, code: str, name: str = None, quot_date=None):
@@ -246,7 +248,8 @@ class Stock:
         if self.is_last:
             try:
                 return float(self.get_info("returnOnEquity"))
-            except:
+            except Exception as e:
+                logger.warn(f'{e} : {e.__doc__}')
                 return self.net_income/self.stockholder_equity
         else:
             return self.net_income/self.stockholder_equity
