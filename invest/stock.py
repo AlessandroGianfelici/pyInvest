@@ -109,11 +109,7 @@ class Stock:
 
     def get_info(self, label):
         try:
-            info = self.info[label]
-            if info is None:
-                return np.nan
-            else:
-                return info
+            return  self.info[label]
         except:
             return np.nan
     

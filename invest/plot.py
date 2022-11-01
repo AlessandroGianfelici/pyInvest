@@ -1,5 +1,6 @@
 import plotly.graph_objects as go
 from toolz.functoolz import juxt
+import pandas as pd
 
 def plot_candle(price_data, indicators=[]):
 
