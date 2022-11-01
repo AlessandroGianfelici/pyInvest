@@ -31,19 +31,6 @@ def select_or_create(path: str):
     return path
 
 
-def load_yaml(filename: str) -> dict:
-    """
-    Utility function to load a yaml file into a pyhon dict
-    Parameters:
-    - filename: str -> fullpath of the yaml file
-    """
-    assert filename.endswith("yaml") or filename.endswith(
-        "yml"
-    ), "Not a yaml extention!"
-    with open(filename, "r", encoding="utf-8") as handler:
-        return yaml.load(handler, Loader=yaml.FullLoader)
-
-
 def merge_dataframe(data_frames):
     return reduce(lambda left, right: pd.merge(left, right, how="outer"), data_frames)
 
@@ -55,7 +42,7 @@ def fundamental_indicator(stock):
     score["ReferencePrice"] = [stock.reference_price]
 
     score["Last Closing Price"] = [stock.hist['Close'].values[-1]]
-    score["price_over_graham_number"] = [stock.reference_price/stock.Graham_number]
+    score["price_over_graham_number"] = [stock.reference_price/stock.graham_price]
     score["Net current asset per share over price"] = [stock.net_current_assets_per_share/stock.reference_price]
 
     score["PE ratio"] = [stock.PE]

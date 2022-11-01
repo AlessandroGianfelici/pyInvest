@@ -187,7 +187,7 @@ class Stock:
             return self.last_before_quot_date(self.financials)['Net Income']
 
     @property
-    def Graham_number(self):
+    def graham_price(self):
         squared_graham = 22.5 * self.book_value * self.earning_per_share
         if squared_graham > 0:
             return (squared_graham) ** (1 / 2)
