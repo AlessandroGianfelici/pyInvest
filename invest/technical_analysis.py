@@ -5,7 +5,7 @@ import numpy as np
 
 
 
-def trend_magnitude(stock, train_length = 120, verbose=True):
+def detect_trend(stock, train_length = 120, verbose=True):
     full_hist = stock.hist.reset_index()
     data_norm = max(full_hist.reset_index()['index'])
     full_hist = full_hist.reset_index()
@@ -42,5 +42,5 @@ def trend_magnitude(stock, train_length = 120, verbose=True):
     if verbose:
         pw_fit.summary()
         piecewise_regression_results(pw_fit)
-        plot_candle(current_trend, trendline)
-    return trend_magnitude.item()
+        plot_candle(current_trend, trendline).show()
+    return trend_magnitude.item(), current_trend.tail(1)['predicted_trend'].item()
