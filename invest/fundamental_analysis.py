@@ -16,7 +16,7 @@ def main_fundamental_indicators(stock):
     score["Reference Price"] = [stock.reference_price]
     score["Graham Price"] = [stock.graham_price]
 
-    score["graham undervaluation"] = [1 - stock.reference_price/stock.graham_price]
+    score["price_over_graham"] = [stock.reference_price/stock.graham_price]
     score["Net current asset per share over price"] = [stock.net_current_assets_per_share/stock.reference_price]
 
     score["PE ratio"] = [stock.PE]
