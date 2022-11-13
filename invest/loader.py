@@ -1,6 +1,6 @@
 import pandas as pd
 import os
-
+import yaml
 
 def load_symbols(filename : str):
     filepath = os.path.join(os.path.dirname(__file__), 'symbols', filename)

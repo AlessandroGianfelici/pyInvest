@@ -38,3 +38,21 @@ def plot_candle(price_data, indicators=[]):
 
     fig.update(layout_yaxis_range=[0, max(price_data["High"] * 1.1)])
     return fig
+
+def piecewise_regression_results(pw_fit):
+    # Plot the data, fit, breakpoints and confidence intervals
+    pw_fit.plot_data(color="grey", s=20)
+    # Pass in standard matplotlib keywords to control any of the plots
+    pw_fit.plot_fit(color="red", linewidth=4)
+    pw_fit.plot_breakpoints()
+    pw_fit.plot_breakpoint_confidence_intervals()
+    return pw_fit
+
+def trendline(price_data):
+    return go.Scatter(
+        x=pd.to_datetime(price_data["Date"]),
+        y=(price_data["predicted_trend"]),
+        name="Predicted_trend",
+        yaxis="y1",
+        showlegend=True,
+    )    
