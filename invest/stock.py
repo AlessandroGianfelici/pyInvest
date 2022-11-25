@@ -308,8 +308,10 @@ class Stock:
     def last_dividend(self):
         if self.is_last and (self.get_info("dividendRate") is not None):
             return  self.get_info("dividendRate")
-        else:
+        elif len(self.annual_dividends):
             return self.annual_dividends.tail(1)['Dividends'].item()
+        else:
+            return 0
 
 
     @property
