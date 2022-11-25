@@ -1,11 +1,4 @@
-import os
-from functools import reduce
-from sklearn.metrics import mean_squared_error
-import numpy as np
-
 import pandas as pd
-import yaml
-
 
 def main_fundamental_indicators(stock):
     score = pd.DataFrame()
@@ -19,9 +12,9 @@ def main_fundamental_indicators(stock):
     score["price_over_graham"] = [stock.reference_price/stock.graham_price]
     score["Net current asset per share over price"] = [stock.net_current_assets_per_share/stock.reference_price]
 
-    score["PE ratio"] = [stock.PE]
-    score["Return On Equity"] = [stock.ROE]
-    score["PB ratio"] = [stock.PB]
+    score["PE"] = [stock.PE]
+    score["ROE"] = [stock.ROE]
+    score["PB"] = [stock.PB]
     score["Tangible PB ratio"] = [stock.price_to_tangible_book]
     score["Return on Assets"] = [stock.ROA]
     score["Dividend yeld"] = [stock.dividend_yeld]

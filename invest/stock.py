@@ -93,6 +93,7 @@ class Stock:
     def hist(self):
         if self._hist is None:
             self._hist = self.ticker.history(period="max")
+            self._hist = self._hist.loc[self._hist.index <= self.quot_date]
         return self._hist
 
     @property
@@ -297,25 +298,23 @@ class Stock:
 
 
     @property
-    def dividends_paid(self):
-        try:
-            return -np.float(self.last_before_quot_date(self.cashflow)["Dividends Paid"])
-        except:
-            return 0
-
-    @property
     def payout_ratio(self):
         try:
-            return  self.dividends_paid / self.net_income
+            return  self.last_dividend / self.EPS
         except:
             return np.nan
-    
+
+    @property
+    def last_dividend(self):
+        if self.is_last and (self.get_info("dividendRate") is not None):
+            return  self.get_info("dividendRate")
+        else:
+            return self.annual_dividends.tail(1)['Dividends'].item()
+
+
     @property
     def dividend_yeld(self):
-        if self.is_last and (self.get_info("trailingAnnualDividendYield") is not None):
-            return  self.get_info("trailingAnnualDividendYield")
-        else:
-            return self.dividends_paid / self.market_cap    
+        return  self.last_dividend/self.reference_price
 
     @property
     def operating_cash_flow(self):
