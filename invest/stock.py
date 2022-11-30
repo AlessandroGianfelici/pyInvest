@@ -181,7 +181,10 @@ class Stock:
     @property
     def PE(self):
         if self.is_last and (self.get_info("trailingPE") is not None):
-            return float(self.get_info("trailingPE"))
+            pe_yahoo = float(self.get_info("trailingPE"))
+            pe_raw = self.market_cap/self.net_income
+            if (pe_yahoo > (pe_raw+100)):
+                return pe_raw
         else:
             return self.market_cap/self.net_income
 

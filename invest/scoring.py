@@ -64,13 +64,7 @@ def score_dividend(div, years, payout):
     tmp_df.loc[(tmp_df['dividend'] > 0) & 
                (tmp_df['payout'] > 0), 'score_DIVIDEND'] = 2
     tmp_df.loc[(tmp_df['dividend'] > 0) & 
-               (tmp_df['payout'] < 0.7), 'score_DIVIDEND'] = 3
-    tmp_df.loc[(tmp_df['dividend'] > 0) & 
-               (tmp_df['payout'] < 0.7) & 
-               (tmp_df['years'] > 10), 'score_DIVIDEND'] = 4
-    tmp_df.loc[(tmp_df['dividend'] > 0) & 
-               (tmp_df['payout'] < 0.7) &
-               (tmp_df['years'] > 15), 'score_DIVIDEND'] = 5
+               (tmp_df['payout'] < 0.7), 'score_DIVIDEND'] = 3 + tmp_df['years']/10
     return tmp_df['score_DIVIDEND']  
 
 def score_graham(price_over_graham):
