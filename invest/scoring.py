@@ -17,7 +17,7 @@ def get_indicators(stock):
 def years_of_dividend_payments(mystock):
     tmp_div_df = pd.DataFrame()
     mydate = mystock.quot_date
-    tmp_div_df['Year'] = list(range(mydate.year-19, mydate.year+1))
+    tmp_div_df['Year'] = list(range(mydate.year-20, mydate.year))
     dividends_df = mystock.annual_dividends.copy().merge(tmp_div_df)
     return len(dividends_df)
 

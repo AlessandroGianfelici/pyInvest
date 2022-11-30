@@ -112,7 +112,7 @@ class Stock:
         try:
             return  self.info[label]
         except:
-            return np.nan
+            return None
     
     @property
     def reference_price(self):
@@ -185,6 +185,8 @@ class Stock:
             pe_raw = self.market_cap/self.net_income
             if (pe_yahoo > (pe_raw+100)):
                 return pe_raw
+            else:
+                return pe_yahoo
         else:
             return self.market_cap/self.net_income
 
