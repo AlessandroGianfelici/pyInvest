@@ -1,4 +1,25 @@
 import pandas as pd
+from invest.fundamental_analysis import main_fundamental_indicators
+from invest.technical_analysis import detect_trend
+
+def get_indicators(stock):
+    trend_magnitude, last_value_trendline = detect_trend(stock, verbose=0)
+    tmp = main_fundamental_indicators(stock)
+    tmp['trendline'] = last_value_trendline
+
+    tmp['trend_magnitude'] = trend_magnitude
+    tmp['price_over_trend'] = (tmp['Reference Price'])/last_value_trendline
+    tmp['sector'] = stock.get_info('sector')
+    tmp['description'] = stock.get_info('longBusinessSummary')
+    tmp['#div_past20y'] = years_of_dividend_payments(stock)
+    return tmp
+
+def years_of_dividend_payments(mystock):
+    tmp_div_df = pd.DataFrame()
+    mydate = mystock.quot_date
+    tmp_div_df['Year'] = list(range(mydate.year-19, mydate.year+1))
+    dividends_df = mystock.annual_dividends.copy().merge(tmp_div_df)
+    return len(dividends_df)
 
 def score_PE(PE):
     tmp_df = pd.DataFrame()
@@ -32,11 +53,24 @@ def score_TREND(trend):
     
     return tmp_df['score_TREND']
     
-def score_dividend(div):
+  
+def score_dividend(div, years, payout):
     tmp_df = pd.DataFrame()
     tmp_df['dividend'] = div
+    tmp_df['years'] = years
+    tmp_df['payout'] = payout
     tmp_df['score_DIVIDEND'] = 0
-    tmp_df.loc[(tmp_df['dividend'] > 0), 'score_DIVIDEND'] = 5    
+    tmp_df.loc[(tmp_df['dividend'] > 0), 'score_DIVIDEND'] = 1
+    tmp_df.loc[(tmp_df['dividend'] > 0) & 
+               (tmp_df['payout'] > 0), 'score_DIVIDEND'] = 2
+    tmp_df.loc[(tmp_df['dividend'] > 0) & 
+               (tmp_df['payout'] < 0.7), 'score_DIVIDEND'] = 3
+    tmp_df.loc[(tmp_df['dividend'] > 0) & 
+               (tmp_df['payout'] < 0.7) & 
+               (tmp_df['years'] > 10), 'score_DIVIDEND'] = 4
+    tmp_df.loc[(tmp_df['dividend'] > 0) & 
+               (tmp_df['payout'] < 0.7) &
+               (tmp_df['years'] > 15), 'score_DIVIDEND'] = 5
     return tmp_df['score_DIVIDEND']  
 
 def score_graham(price_over_graham):
