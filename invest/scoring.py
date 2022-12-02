@@ -2,6 +2,24 @@ import pandas as pd
 from invest.fundamental_analysis import main_fundamental_indicators
 from invest.technical_analysis import detect_trend
 
+
+def compute_score(indicatori : pd.DataFrame):
+    indicatori['score_NIPE'] = score_NIPE(indicatori['Net income per employee'])
+    indicatori['score_PE'] = score_PE(indicatori['PE'])
+    indicatori['score_QR'] = score_QR(indicatori['Quick Ratio'])
+    indicatori['score_TREND'] = score_TREND(indicatori['trend_magnitude'])
+    indicatori['score_PB'] = score_PB(indicatori['PB'])
+    indicatori['score_DIVIDEND'] = score_dividend(indicatori['Dividend yeld'], 
+                                                  indicatori['#div_past20y'],
+                                                  indicatori['Payout Ratio'])
+    indicatori['score_GRAHAM'] = score_graham(indicatori['price_over_graham'])
+    indicatori['score_ROA'] = score_ROA(indicatori['Return on Assets'])
+    indicatori['score_ROE'] = score_ROE(indicatori['ROE'])
+    indicatori['score_NCAPSOP'] = score_NCAPSOP(indicatori['Net current asset per share over price'])
+    indicatori['OVERALL_SCORE'] = indicatori.filter(like='score').sum(axis=1)
+    return indicatori.sort_values(by='score_DIVIDEND', ascending=False)
+
+
 def get_indicators(stock):
     trend_magnitude, last_value_trendline = detect_trend(stock, verbose=0)
     tmp = main_fundamental_indicators(stock)
@@ -32,6 +50,22 @@ def score_PE(PE):
     tmp_df.loc[tmp_df['PE'] < 10, 'score_PE'] = 5
     return tmp_df['score_PE']
 
+def score_QR(qr):
+    tmp_df = pd.DataFrame()
+    tmp_df['QR'] = qr
+    tmp_df['score_QR'] = 0
+    tmp_df.loc[tmp_df['QR'].isna(), 'score_QR'] = 0
+    tmp_df.loc[tmp_df['QR'] < 0.8, 'score_QR'] = 1
+    tmp_df.loc[(tmp_df['QR'] < 1) & 
+               (tmp_df['QR'] > 0.8) , 'score_QR'] = 2
+    tmp_df.loc[(tmp_df['QR'] > 1) & 
+               (tmp_df['QR'] < 1.2) , 'score_QR'] = 3
+    tmp_df.loc[(tmp_df['QR'] > 1.2) & 
+               (tmp_df['QR'] < 2) , 'score_QR'] = 3
+    
+    tmp_df.loc[tmp_df['QR'] > 2, 'score_QR'] = 5
+    return tmp_df['score_QR']
+
 def score_PB(PB):
     tmp_df = pd.DataFrame()
     tmp_df['PB'] = PB
@@ -52,7 +86,18 @@ def score_TREND(trend):
     tmp_df.loc[(tmp_df['TREND'] > 1), 'score_TREND'] = 5
     
     return tmp_df['score_TREND']
-    
+
+
+def score_NIPE(IPE):
+    tmp_df = pd.DataFrame()
+    tmp_df['IPE'] = IPE
+    tmp_df['score_NIPE'] = None
+    tmp_df.loc[tmp_df['IPE'].isna() | (tmp_df['IPE'] < 0), 'score_NIPE'] = 0
+    tmp_df.loc[((tmp_df['IPE'] > 0) & 
+                (tmp_df['IPE'] < 100000)), 'score_NIPE'] = 5*IPE/100000
+    tmp_df.loc[((tmp_df['IPE'] >= 100000)), 'score_NIPE'] = 5
+    return tmp_df['score_NIPE'] 
+
   
 def score_dividend(div, years, payout):
     tmp_df = pd.DataFrame()
@@ -82,7 +127,7 @@ def score_graham(price_over_graham):
     tmp_df.loc[tmp_df['graham'] < 1, 'score_GRAHAM'] = 5
     return tmp_df['score_GRAHAM']  
 
-def score_roa(ROA):
+def score_ROA(ROA):
     tmp_df = pd.DataFrame()
     tmp_df['ROA'] = ROA
     tmp_df['score_ROA'] = None
@@ -98,7 +143,7 @@ def score_roa(ROA):
     return tmp_df['score_ROA']  
 
 
-def score_roe(ROE):
+def score_ROE(ROE):
     tmp_df = pd.DataFrame()
     tmp_df['ROE'] = ROE
     tmp_df['score_ROE'] = None
