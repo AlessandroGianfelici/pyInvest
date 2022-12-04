@@ -141,15 +141,11 @@ def score_ROA(ROA):
     tmp_df = pd.DataFrame()
     tmp_df['ROA'] = ROA
     tmp_df['score_ROA'] = None
-    tmp_df.loc[tmp_df['ROA'].isna(), 'score_ROA'] = 0
-    tmp_df.loc[tmp_df['ROA'] < 0, 'score_ROA'] = 1
-    tmp_df.loc[((tmp_df['ROA'] > 0) & 
-                (tmp_df['ROA'] < 0.05)), 'score_ROA'] = 2
-    tmp_df.loc[((tmp_df['ROA'] > 0.05) & 
-                (tmp_df['ROA'] < 0.125)), 'score_ROA'] = 3
-    tmp_df.loc[((tmp_df['ROA'] > 0.125) & 
-                (tmp_df['ROA'] < 0.2)), 'score_ROA'] = 4
-    tmp_df.loc[((tmp_df['ROA'] > 0.2)), 'score_ROA'] = 5
+    tmp_df.loc[tmp_df['ROA'].isna() |
+              (tmp_df['ROA'] < 0), 'score_ROA'] = 0
+    tmp_df.loc[tmp_df['ROA'] > 0 |
+              (tmp_df['ROA'] < 0.2), 'score_ROA'] = 5*tmp_df['ROA']/0.2
+    tmp_df.loc[((tmp_df['ROA'] >= 0.2)), 'score_ROA'] = 5
     return tmp_df['score_ROA']  
 
 
@@ -157,15 +153,11 @@ def score_ROE(ROE):
     tmp_df = pd.DataFrame()
     tmp_df['ROE'] = ROE
     tmp_df['score_ROE'] = None
-    tmp_df.loc[tmp_df['ROE'].isna(), 'score_ROE'] = 0
-    tmp_df.loc[tmp_df['ROE'] < 0, 'score_ROE'] = 1
-    tmp_df.loc[((tmp_df['ROE'] > 0) & 
-                (tmp_df['ROE'] < 0.05)), 'score_ROE'] = 2
-    tmp_df.loc[((tmp_df['ROE'] > 0.05) & 
-                (tmp_df['ROE'] < 0.125)), 'score_ROE'] = 3
-    tmp_df.loc[((tmp_df['ROE'] > 0.125) & 
-                (tmp_df['ROE'] < 0.2)), 'score_ROE'] = 4
-    tmp_df.loc[((tmp_df['ROE'] > 0.2)), 'score_ROE'] = 5
+    tmp_df.loc[tmp_df['ROE'].isna() |
+              (tmp_df['ROE'] < 0), 'score_ROE'] = 0
+    tmp_df.loc[tmp_df['ROE'] > 0 |
+              (tmp_df['ROE'] < 0.2), 'score_ROE'] = 5*tmp_df['ROE']/0.2
+    tmp_df.loc[((tmp_df['ROE'] >= 0.2)), 'score_ROE'] = 5
     return tmp_df['score_ROE'] 
 
 
