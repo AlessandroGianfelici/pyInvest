@@ -16,8 +16,12 @@ def compute_score(indicatori : pd.DataFrame):
     indicatori['score_ROA'] = score_ROA(indicatori['Return on Assets'])
     indicatori['score_ROE'] = score_ROE(indicatori['ROE'])
     indicatori['score_NCAPSOP'] = score_NCAPSOP(indicatori['Net current asset per share over price'])
-    indicatori['OVERALL_SCORE'] = indicatori.filter(like='score').sum(axis=1)
-    return indicatori.sort_values(by='score_DIVIDEND', ascending=False)
+    
+    n_scores = len(indicatori.filter(like='score').columns)
+
+    indicatori['OVERALL_SCORE'] = indicatori.filter(like='score').sum(axis=1)/n_scores
+
+    return indicatori.sort_values(by='OVERALL_SCORE', ascending=False)
 
 
 def get_indicators(stock):
