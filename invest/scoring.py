@@ -138,8 +138,8 @@ def score_ROA(ROA):
     tmp_df.loc[tmp_df['ROA'].isna() |
               (tmp_df['ROA'] < 0), 'score_ROA'] = 0
     tmp_df.loc[tmp_df['ROA'] > 0 &
-              (tmp_df['ROA'] < 0.2), 'score_ROA'] = 5*tmp_df['ROA']/0.2
-    tmp_df.loc[((tmp_df['ROA'] >= 0.2)), 'score_ROA'] = 5
+              (tmp_df['ROA'] < 0.1), 'score_ROA'] = 5*tmp_df['ROA']/0.1
+    tmp_df.loc[((tmp_df['ROA'] >= 0.1)), 'score_ROA'] = 5
     return tmp_df['score_ROA']  
 
 
