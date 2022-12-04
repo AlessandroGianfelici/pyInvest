@@ -59,14 +59,8 @@ def score_QR(qr):
     tmp_df['QR'] = qr
     tmp_df['score_QR'] = 0
     tmp_df.loc[tmp_df['QR'].isna(), 'score_QR'] = 0
-    tmp_df.loc[tmp_df['QR'] < 0.8, 'score_QR'] = 1
-    tmp_df.loc[(tmp_df['QR'] < 1) & 
-               (tmp_df['QR'] > 0.8) , 'score_QR'] = 2
-    tmp_df.loc[(tmp_df['QR'] > 1) & 
-               (tmp_df['QR'] < 1.2) , 'score_QR'] = 3
-    tmp_df.loc[(tmp_df['QR'] > 1.2) & 
-               (tmp_df['QR'] < 2) , 'score_QR'] = 3
-    
+    tmp_df.loc[(tmp_df['QR'] < 2) & 
+               (tmp_df['QR'] > 0) , 'score_QR'] =  2.5*(tmp_df['QR'])   
     tmp_df.loc[tmp_df['QR'] > 2, 'score_QR'] = 5
     return tmp_df['score_QR']
 
@@ -143,7 +137,7 @@ def score_ROA(ROA):
     tmp_df['score_ROA'] = None
     tmp_df.loc[tmp_df['ROA'].isna() |
               (tmp_df['ROA'] < 0), 'score_ROA'] = 0
-    tmp_df.loc[tmp_df['ROA'] > 0 |
+    tmp_df.loc[tmp_df['ROA'] > 0 &
               (tmp_df['ROA'] < 0.2), 'score_ROA'] = 5*tmp_df['ROA']/0.2
     tmp_df.loc[((tmp_df['ROA'] >= 0.2)), 'score_ROA'] = 5
     return tmp_df['score_ROA']  
@@ -155,7 +149,7 @@ def score_ROE(ROE):
     tmp_df['score_ROE'] = None
     tmp_df.loc[tmp_df['ROE'].isna() |
               (tmp_df['ROE'] < 0), 'score_ROE'] = 0
-    tmp_df.loc[tmp_df['ROE'] > 0 |
+    tmp_df.loc[tmp_df['ROE'] > 0 &
               (tmp_df['ROE'] < 0.2), 'score_ROE'] = 5*tmp_df['ROE']/0.2
     tmp_df.loc[((tmp_df['ROE'] >= 0.2)), 'score_ROE'] = 5
     return tmp_df['score_ROE'] 
