@@ -95,11 +95,17 @@ def score_TREND(trend):
 def score_NIPE(IPE):
     tmp_df = pd.DataFrame()
     tmp_df['IPE'] = IPE
+    
+    best_decile = tmp_df['IPE'].quantile(0.90)
+    
     tmp_df['score_NIPE'] = None
     tmp_df.loc[tmp_df['IPE'].isna() | (tmp_df['IPE'] < 0), 'score_NIPE'] = 0
-    tmp_df.loc[((tmp_df['IPE'] > 0) & 
-                (tmp_df['IPE'] < 100000)), 'score_NIPE'] = 5*IPE/100000
-    tmp_df.loc[((tmp_df['IPE'] >= 100000)), 'score_NIPE'] = 5
+
+    tmp_df.loc[(tmp_df['IPE'] > 0) & 
+               (tmp_df['IPE'] < best_decile), 'score_NIPE'] = 5*tmp_df['IPE']/best_decile
+
+    tmp_df.loc[(tmp_df['IPE'] >= best_decile), 'score_NIPE'] = 5
+    
     return tmp_df['score_NIPE'] 
 
   

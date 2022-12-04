@@ -9,6 +9,9 @@ def load_symbols(filename : str):
 def load_borsa_italiana_stocks_symbols():
     return load_symbols('borsa_italiana.csv')
 
+def load_tokyo_stock_exchange_symbols():
+    return load_symbols('tokyo_stock_exchange.csv')
+
 def load_yaml(filename: str) -> dict:
     """
     Utility function to load a yaml file into a pyhon dict
