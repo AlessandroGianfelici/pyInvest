@@ -37,7 +37,7 @@ def get_indicators(stock):
     tmp['#div_past20y'] = years_of_dividend_payments(stock)
     return tmp
 
-def score_ROCE(roce)
+def score_ROCE(roce):
     tmp = pd.DataFrame()
     tmp['ROCE'] = roce
     soglia_5 = tmp['ROCE'].quantile(0.9)
