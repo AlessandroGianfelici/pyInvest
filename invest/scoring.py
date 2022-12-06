@@ -16,7 +16,8 @@ def compute_score(indicatori : pd.DataFrame):
     indicatori['score_ROA'] = score_ROA(indicatori['Return on Assets'])
     indicatori['score_ROE'] = score_ROE(indicatori['ROE'])
     indicatori['score_NCAPSOP'] = score_NCAPSOP(indicatori['Net current asset per share over price'])
-    
+    indicatori['score_ROCE'] = score_ROCE(indicatori['ROCE'])
+     
     n_scores = len(indicatori.filter(like='score').columns)
 
     indicatori['OVERALL_SCORE'] = indicatori.filter(like='score').sum(axis=1)/n_scores
@@ -35,6 +36,18 @@ def get_indicators(stock):
     tmp['description'] = stock.get_info('longBusinessSummary')
     tmp['#div_past20y'] = years_of_dividend_payments(stock)
     return tmp
+
+def score_ROCE(roce)
+    tmp = pd.DataFrame()
+    tmp['ROCE'] = roce
+    soglia_5 = tmp['ROCE'].quantile(0.9)
+    tmp['score_ROCE'] = None
+    tmp.loc[(tmp['ROCE'].isna() | 
+            (tmp['ROCE'] < 0)), 'score_ROCE'] = 0
+    tmp.loc[(tmp['ROCE'] > soglia_5), 'score_ROCE'] = 5
+    tmp.loc[((tmp['ROCE'] >= 0) & 
+             (tmp['ROCE'] <= soglia_5)), 'score_ROCE'] = 5*tmp['ROCE']/soglia_5
+    return tmp['score_ROCE']
 
 def years_of_dividend_payments(mystock):
     tmp_div_df = pd.DataFrame()
