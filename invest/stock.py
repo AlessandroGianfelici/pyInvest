@@ -93,7 +93,8 @@ class Stock:
     def hist(self):
         if self._hist is None:
             self._hist = self.ticker.history(period="max")
-            self._hist = self._hist.loc[self._hist.index <= self.quot_date]
+            self._hist.index = self._hist.index.map(lambda x : x.replace(tzinfo=None))
+            self._hist = self._hist.loc[self._hist.index <= pd.to_datetime(self.quot_date)]
         return self._hist
 
     @property
