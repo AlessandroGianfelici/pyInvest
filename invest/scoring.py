@@ -1,7 +1,8 @@
 import pandas as pd
 from invest.fundamental_analysis import main_fundamental_indicators
 from invest.technical_analysis import detect_trend
-
+import piecewise_regression
+from sklearn.linear_model import LinearRegression
 
 def compute_score(indicatori : pd.DataFrame):
     indicatori['score_NIPE'] = score_NIPE(indicatori['Net income per employee'])
@@ -31,12 +32,12 @@ def get_indicators(stock):
     trend_magnitude, last_value_trendline = detect_trend(stock, verbose=0)
     tmp = main_fundamental_indicators(stock)
     tmp['trendline'] = last_value_trendline
-
     tmp['trend_magnitude'] = trend_magnitude
     tmp['price_over_trend'] = (tmp['Reference Price'])/last_value_trendline
     tmp['sector'] = stock.get_info('sector')
     tmp['description'] = stock.get_info('longBusinessSummary')
     tmp['#div_past20y'] = years_of_dividend_payments(stock)
+    tmp['score_DIVTREND'] = score_DIVTREND(stock)
     return tmp
 
 def score_ROCE(roce):
@@ -198,3 +199,41 @@ def score_NCAPSOP(NCAPSOP):
                 (tmp_df['NCAPSOP'] < 0)), 'score_NCAPSOP'] = 4
     tmp_df.loc[((tmp_df['NCAPSOP'] > 0)), 'score_NCAPSOP'] = 5
     return tmp_df['score_NCAPSOP'] 
+
+
+
+def score_DIVTREND(stock):
+    try:
+        annual_dividends = stock.annual_dividends.loc[mystock.annual_dividends['Year']>=2002]
+        ms = piecewise_regression.ModelSelection(annual_dividends['Year'].values, 
+                                             annual_dividends['Dividends'].values,
+                                             max_breakpoints=3)
+    except:
+        return 0
+    model_selector = pd.DataFrame()
+    
+    model_selector['bic'] = [ms.model_summaries[0]['bic'],
+                             ms.model_summaries[1]['bic'],
+                             ms.model_summaries[2]['bic'],
+                             ms.model_summaries[3]['bic']]
+    model_selector = model_selector.dropna()
+    n_breakpoints = model_selector.loc[model_selector['bic'] == min(model_selector['bic'])].index.item()
+    
+    try:
+        pw_fit = piecewise_regression.Fit(annual_dividends['Year'].values, 
+                                          annual_dividends['Dividends'].values,
+                                          n_breakpoints=n_breakpoints)
+        pw_fit.summary()
+        
+        result = pw_fit.get_results()
+        alpha = result['estimates'][f'alpha{1+n_breakpoints}']
+        min_alpha = alpha['confidence_interval'][0]
+        max_alpha = alpha['confidence_interval'][1]
+        if min_alpha > 0:
+            return 5
+        elif (min_alpha < 0) and (max_alpha > 0):
+            return 3
+        elif max_alpha < 0:
+            return 0
+    except:
+        return 3

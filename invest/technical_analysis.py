@@ -4,7 +4,6 @@ from invest.plot import plot_candle, trendline, piecewise_regression_results
 import numpy as np
 
 
-
 def detect_trend(stock, train_length = 120, verbose=True):
     full_hist = stock.hist.reset_index()
     data_norm = max(full_hist.reset_index()['index'])
