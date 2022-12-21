@@ -287,7 +287,7 @@ class Stock:
             return self.last_before_quot_date(self.balance_sheet[CURRENT_LIAB])
         else:
             
-            return self.last_before_quot_date(self.quarterly_balance_sheet)[CURRENT_LIAB"]
+            return self.last_before_quot_date(self.quarterly_balance_sheet)[CURRENT_LIAB]
 
     @property
     def net_current_assets_per_share(self):
