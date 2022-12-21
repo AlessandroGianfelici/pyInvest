@@ -259,7 +259,10 @@ class Stock:
     
     @property
     def total_current_assets(self):
-        return self.last_before_quot_date(self.balance_sheet)["Total Current Assets"]
+        if "Total Current Assets" in self.balance_sheet.columns:
+            return self.last_before_quot_date(self.balance_sheet)["Total Current Assets"]
+        else:
+            return self.last_before_quot_date(self.balance_sheet)["Current Assets"]
  
     @property
     def inventory(self):
