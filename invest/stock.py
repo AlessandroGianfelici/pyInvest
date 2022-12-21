@@ -170,10 +170,14 @@ class Stock:
     
     @property
     def total_liabilities(self):
-        if self.is_last:
-            return self.quarterly_balance_sheet["Total Liab"].values[-1]
+        if "Total Liab" in self.quarterly_balance_sheet:
+            column = "Total Liab"
         else:
-            return self.last_before_quot_date(self.balance_sheet)["Total Liab"]
+            column = "Total Liabilities Net Minority Interest"
+        if self.is_last:
+            return self.quarterly_balance_sheet[column].values[-1]
+        else:
+            return self.last_before_quot_date(self.balance_sheet)[column]
  
     @property
     def earning_per_share(self):
