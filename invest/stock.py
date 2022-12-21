@@ -6,6 +6,8 @@ import logging
 
 logger = logging.getLogger()
 
+CURRENT_LIAB = 'Current Liabilities'#'Total Current Liabilities'
+
 class Stock:
     def __init__(self, code: str, name: str = None, quot_date=None):
         self.code = code
@@ -282,10 +284,10 @@ class Stock:
     @property
     def total_current_liabilities(self):
         if self.is_last:
-            return self.last_before_quot_date(self.balance_sheet["Total Current Liabilities"])
+            return self.last_before_quot_date(self.balance_sheet[CURRENT_LIAB])
         else:
             
-            return self.last_before_quot_date(self.quarterly_balance_sheet)["Total Current Liabilities"]
+            return self.last_before_quot_date(self.quarterly_balance_sheet)[CURRENT_LIAB"]
 
     @property
     def net_current_assets_per_share(self):
@@ -296,7 +298,7 @@ class Stock:
         if self.is_last and (self.get_info("totalDebt") is not None):
             return self.get_info("totalDebt")
         else:
-            return self.last_before_quot_date(self.balance_sheet)[['Long Term Debt', 'Total Current Liabilities']].sum()
+            return self.last_before_quot_date(self.balance_sheet)[['Long Term Debt', CURRENT_LIAB]].sum()
 
     @property
     def net_cash_per_share(self):
