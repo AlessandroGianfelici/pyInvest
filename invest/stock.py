@@ -7,6 +7,7 @@ import logging
 logger = logging.getLogger()
 
 CURRENT_LIAB = 'Current Liabilities'#'Total Current Liabilities'
+EBIT = 'EBIT'
 
 class Stock:
     def __init__(self, code: str, name: str = None, quot_date=None):
@@ -390,7 +391,7 @@ class Stock:
 
     @property
     def EBIT(self):
-        return self.last_before_quot_date(self.financials)["Ebit"]
+        return self.last_before_quot_date(self.financials)[EBIT]
 
     @staticmethod
     def last_before(df, date):
