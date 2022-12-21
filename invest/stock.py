@@ -8,6 +8,9 @@ logger = logging.getLogger()
 
 CURRENT_LIAB = 'Current Liabilities'#'Total Current Liabilities'
 EBIT = 'EBIT'
+CURRENT_ASSETS = 'Current Assets'
+ASSETS = "Total Assets"
+TOTAL_LIAB = "Total Liabilities Net Minority Interest"
 
 class Stock:
     def __init__(self, code: str, name: str = None, quot_date=None):
@@ -167,20 +170,16 @@ class Stock:
     @property
     def total_assets(self):
         if self.is_last:
-            return self.quarterly_balance_sheet["Total Assets"].values[-1]
+            return self.quarterly_balance_sheet[ASSETS].values[-1]
         else:
-            return self.last_before_quot_date(self.balance_sheet)["Total Assets"]
+            return self.last_before_quot_date(self.balance_sheet)[ASSETS]
     
     @property
     def total_liabilities(self):
-        if "Total Liab" in self.quarterly_balance_sheet:
-            column = "Total Liab"
-        else:
-            column = "Total Liabilities Net Minority Interest"
         if self.is_last:
-            return self.quarterly_balance_sheet[column].values[-1]
+            return self.quarterly_balance_sheet[TOTAL_LIAB].values[-1]
         else:
-            return self.last_before_quot_date(self.balance_sheet)[column]
+            return self.last_before_quot_date(self.balance_sheet)[TOTAL_LIAB]
  
     @property
     def earning_per_share(self):
@@ -266,10 +265,10 @@ class Stock:
     
     @property
     def total_current_assets(self):
-        if "Total Current Assets" in self.balance_sheet.columns:
-            return self.last_before_quot_date(self.balance_sheet)["Total Current Assets"]
-        else:
-            return self.last_before_quot_date(self.balance_sheet)["Current Assets"]
+        try:
+            return self.last_before_quot_date(self.balance_sheet)[CURRENT_ASSETS]
+        except:
+            return self.total_assets
  
     @property
     def inventory(self):
@@ -284,11 +283,13 @@ class Stock:
 
     @property
     def total_current_liabilities(self):
-        if self.is_last:
-            return self.last_before_quot_date(self.balance_sheet[CURRENT_LIAB])
-        else:
-            
-            return self.last_before_quot_date(self.quarterly_balance_sheet)[CURRENT_LIAB]
+        try:
+            if self.is_last:
+                return self.last_before_quot_date(self.balance_sheet[CURRENT_LIAB])
+            else:
+                return self.last_before_quot_date(self.quarterly_balance_sheet)[CURRENT_LIAB]
+        except:
+            return self.total_liabilities
 
     @property
     def net_current_assets_per_share(self):
