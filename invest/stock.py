@@ -322,6 +322,11 @@ class Stock:
     def cash(self):
         if self.is_last and (self.get_info("totalCash") is not None):
             return self.get_info("totalCash")
+        elif self.is_last and len(self.quarterly_balance_sheet):
+            try:
+                return self.last_before_quot_date(self.quarterly_balance_sheet)[CASH]
+            except:
+                return self.last_before_quot_date(self.quarterly_balance_sheet)[CASH_AND_EQ]
         else:
             try:
                 return self.last_before_quot_date(self.balance_sheet)[CASH]
@@ -412,7 +417,24 @@ class Stock:
 
     @property
     def EBIT(self):
-        return self.last_before_quot_date(self.financials)[EBIT]
+        if 0:#self.is_last and len(self.quarterly_financials) and (EBIT in self.quarterly_financials.columns):
+            return self.last_before_quot_date(self.quarterly_financials)[EBIT]
+        elif self.is_last and (EBIT in self.financials.columns):
+            return self.last_before_quot_date(self.financials)[EBIT]
+        else:
+            return self.pretax_income + self.interest_expense
+
+    def pretax_income(self):
+        if 0:#self.is_last and len(self.quarterly_financials):
+            return self.last_before_quot_date(self.quarterly_financials)['Pretax Income']
+        else:
+            return self.last_before_quot_date(self.financials)['Pretax Income']
+
+    def interest_expense(self):
+        if 0:#self.is_last and len(self.quarterly_financials):
+            return self.last_before_quot_date(self.quarterly_financials)['Interest Expense']
+        else:
+            return self.last_before_quot_date(self.financials)['Interest Expense']
 
     @staticmethod
     def last_before(df, date):
