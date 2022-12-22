@@ -13,6 +13,9 @@ ASSETS = "Total Assets"
 TOTAL_LIAB = "Total Liabilities Net Minority Interest"
 OPERATING_CASHFLOW = 'Operating Cash Flow'#"Total Cash From Operating Activities"
 FREE_CASHFLOW = 'Free Cash Flow'
+CASH = 'Cash'
+CASH_AND_EQ = 'Cash And Cash Equivalents'
+
 
 class Stock:
     def __init__(self, code: str, name: str = None, quot_date=None):
@@ -320,7 +323,10 @@ class Stock:
         if self.is_last and (self.get_info("totalCash") is not None):
             return self.get_info("totalCash")
         else:
-            return self.last_before_quot_date(self.balance_sheet)['Cash']
+            try:
+                return self.last_before_quot_date(self.balance_sheet)[CASH]
+            except:
+                return self.last_before_quot_date(self.balance_sheet)[CASH_AND_EQ]
 
 
     @property
