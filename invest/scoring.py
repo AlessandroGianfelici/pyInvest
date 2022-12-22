@@ -223,8 +223,7 @@ def score_DIVTREND(stock):
         pw_fit = piecewise_regression.Fit(annual_dividends['Year'].values, 
                                           annual_dividends['Dividends'].values,
                                           n_breakpoints=n_breakpoints)
-        pw_fit.summary()
-        
+       
         result = pw_fit.get_results()
         alpha = result['estimates'][f'alpha{1+n_breakpoints}']
         min_alpha = alpha['confidence_interval'][0]

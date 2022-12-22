@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(name='invest',
-      version='0.0.28',
+      version='0.0.29',
       description='A collection of utilities for investors and traders',
       url='https://github.com/AlessandroGianfelici/pyInvest.git',
       author='Alessandro Gianfelici',
