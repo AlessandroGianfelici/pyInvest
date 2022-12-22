@@ -11,6 +11,8 @@ EBIT = 'EBIT'
 CURRENT_ASSETS = 'Current Assets'
 ASSETS = "Total Assets"
 TOTAL_LIAB = "Total Liabilities Net Minority Interest"
+OPERATING_CASHFLOW = 'Operating Cash Flow'#"Total Cash From Operating Activities"
+FREE_CASHFLOW = 'Free Cash Flow'
 
 class Stock:
     def __init__(self, code: str, name: str = None, quot_date=None):
@@ -27,6 +29,7 @@ class Stock:
         self._revenue_and_earning = None
         self._quarterly_balance_sheet = None
         self._n_shares = None
+        self._quarterly_cashflow = None
         self.is_last = (quot_date is None)
         self.quot_date = quot_date or datetime.now()
 
@@ -67,6 +70,12 @@ class Stock:
         if self._cashflow is None:
             self._cashflow = self.ticker.cashflow.T.sort_index()
         return self._cashflow
+
+    @property
+    def quarterly_cashflow(self):
+        if self._quarterly_cashflow is None:
+            self._quarterly_cashflow = self.ticker.quarterly_cashflow.T.sort_index()
+        return self._quarterly_cashflow
 
     @property
     def revenue_and_earning(self):
@@ -340,7 +349,7 @@ class Stock:
         if self.is_last and (self.get_info("operatingCashflow") is not None) :
             return np.float(self.get_info("operatingCashflow"))
         else:
-            return np.float( self.last_before_quot_date(self.cashflow)["Total Cash From Operating Activities"])
+            return np.float( self.last_before_quot_date(self.cashflow)[OPERATING_CASHFLOW])
 
     @property
     def price_to_cash_flow(self):
@@ -357,8 +366,13 @@ class Stock:
     def free_cash_flow(self):
         if self.is_last and (self.get_info("freeCashflow") is not None):
             return np.float(self.get_info("freeCashflow"))
+        elif self.is_last and len(self.quarterly_cashflow):
+            return self.quarterly_cashflow[FREE_CASHFLOW]
         else:
-            return self.operating_cash_flow - self.capital_expenditures
+            try:
+                return self.last_before_quot_date(self.cashflow)[FREE_CASHFLOW]
+            except:
+                return self.operating_cash_flow - self.capital_expenditures
 
     @property
     def capital_expenditures(self):
