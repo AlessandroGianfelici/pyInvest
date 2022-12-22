@@ -424,12 +424,14 @@ class Stock:
         else:
             return self.pretax_income + self.interest_expense
 
+    @property
     def pretax_income(self):
         if 0:#self.is_last and len(self.quarterly_financials):
             return self.last_before_quot_date(self.quarterly_financials)['Pretax Income']
         else:
             return self.last_before_quot_date(self.financials)['Pretax Income']
-
+    
+    @property
     def interest_expense(self):
         if 0:#self.is_last and len(self.quarterly_financials):
             return self.last_before_quot_date(self.quarterly_financials)['Interest Expense']
